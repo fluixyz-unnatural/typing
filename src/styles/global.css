@@ -1,0 +1,65 @@
+.key-icon {
+  height: 2.5rem;
+  text-align: center;
+  line-height: 2.5rem;
+  color: rgb(99, 94, 107);
+  font-weight: bold;
+  border: rgb(193, 200, 207) solid 0.125rem;
+  border-radius: 0.25rem;
+  font-family: 'Varela Round', sans-serif;
+  box-sizing: border-box;
+  transition: all 0.2s ease-out;
+}
+
+.key-icon-active {
+  background-color: rgb(185, 216, 255);
+  border-color: rgb(125, 169, 221);
+}
+
+.key-100 {
+  width: 2.5rem;
+}
+
+.key-125 {
+  width: calc(1.25 * 2.5rem);
+}
+.key-misc {
+  width: calc(1.32 * 2.5rem);
+}
+
+.key-150 {
+  width: calc(1.5 * 2.5rem);
+}
+
+.key-168 {
+  width: calc(1.68 * 2.5rem);
+}
+.key-175 {
+  width: calc(1.75 * 2.5rem);
+}
+
+.key-200 {
+  width: calc(2 * 2.5rem);
+}
+
+.key-225 {
+  width: calc(2.25 * 2.5rem);
+}
+.key-232 {
+  width: calc(2.32 * 2.5rem);
+}
+.key-space {
+  width: calc(3.76 * 2.5rem);
+}
+
+.keyboard-row {
+  width: calc(2.5 * 16rem);
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  margin-bottom:0.25rem;
+}
+
+.text {
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
