@@ -3,14 +3,8 @@ import Layout from '../components/Layout'
 import Game from '../components/Game'
 
 const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
+  <Layout title="typing [WIP]">
     <Game />
-    <h1>Hello Next.js 👋</h1>
-    <p>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </p>
   </Layout>
 )
 

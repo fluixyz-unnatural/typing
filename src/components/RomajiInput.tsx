@@ -5,9 +5,12 @@ import {
   consonants,
   invertedConsonantsTable,
 } from '../utils/romaji'
+import { Odai } from '../utils/odai'
 
 interface Props {
   handleInput: (key: string) => void
+  handleClear: () => void
+  odai: Odai
 }
 
 export default function RomajiInput(props: Props) {
@@ -17,7 +20,7 @@ export default function RomajiInput(props: Props) {
   const [error, setError] = useState(false)
   const [fin, setFin] = useState('')
 
-  const odai = 'んあっあっあっ'
+  const odai = props.odai.kana
   useEffect(() => {
     // イベントリスナーから呼ぶための
     bufferRef.current = buffer
@@ -102,6 +105,7 @@ export default function RomajiInput(props: Props) {
     }
     setError(!ok)
     if (odai.length === cursor + 1 && forward === true) {
+      props.handleClear()
       setCursor(0)
       setFin('')
     }
@@ -123,24 +127,29 @@ export default function RomajiInput(props: Props) {
     }
   }, [props.handleInput])
   return (
-    <div>
-      <h2>たいぴんぐ</h2>
+    <div className={'game-text-view'}>
       <div style={{ display: 'flex' }}>
         <p>お題：</p>
-        <p>
-          <span style={{ fontWeight: 'bold' }}>
-            {odai.substring(0, cursor)}
-          </span>
-          <span style={{ color: 'gray' }}>{odai.substring(cursor)}</span>
-        </p>
+        <div>
+          <p suppressHydrationWarning>{props.odai.view}</p>
+          <p style={{ display: 'flex' }}>
+            <span suppressHydrationWarning className={'hiragana-sumi'}>
+              {odai.substring(0, cursor)}
+            </span>
+            <span suppressHydrationWarning className={'hiragana-mi'}>
+              {odai.substring(cursor)}
+            </span>
+          </p>
+        </div>
       </div>
-      <div style={{ display: 'flex', color: error ? 'red' : 'black' }}>
+
+      <div style={{ display: 'flex' }}>
         <p>入力：</p>
-        <p>{fin}</p>
-      </div>
-      <div style={{ display: 'flex', color: error ? 'red' : 'black' }}>
-        <p>バッファ：</p>
-        <p>{buffer}</p>
+        <p>
+          <span>{fin}</span>
+          <span className={error ? 'error-buffer' : ''}>{buffer}</span>
+          <span className="carret"></span>
+        </p>
       </div>
     </div>
   )

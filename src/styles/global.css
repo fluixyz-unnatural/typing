@@ -9,11 +9,13 @@
   font-family: 'Varela Round', sans-serif;
   box-sizing: border-box;
   transition: all 0.2s ease-out;
+  transition: transform 0.1s ease-out;
 }
 
 .key-icon-active {
   background-color: rgb(185, 216, 255);
   border-color: rgb(125, 169, 221);
+  transform: translateY(0.1rem);
 }
 
 .key-100 {
@@ -52,14 +54,65 @@
   width: calc(3.76 * 2.5rem);
 }
 
+.keyboard {
+  width: fit-content;
+  margin: auto;
+}
+
 .keyboard-row {
   width: calc(2.5 * 16rem);
   display: flex;
   flex-flow: row;
   justify-content: space-between;
-  margin-bottom:0.25rem;
+  margin-bottom: 0.25rem;
 }
 
-.text {
+.game-text-view {
   font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.75rem;
+}
+p {
+  margin: 0.25em;
+}
+
+.error-buffer {
+  color: red;
+  font-weight: bold;
+}
+
+.hiragana-sumi {
+  display: flex;
+  font-size: 1.2rem;
+}
+.hiragana-mi {
+  display: flex;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.carret {
+  display: inline-block;
+  border-left: rgb(125, 169, 221) solid 0.125rem;
+  height: 1ch;
+  animation: 1s ease-out 0s infinite blinking;
+}
+
+@keyframes blinking {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.time {
+  font-size: 1.6rem;
+}
+
+.game-container {
+  border: rgb(99, 94, 107) solid 0.2rem;
+  width: 100ch;
+  padding: 2rem;
+  margin: 1rem;
 }

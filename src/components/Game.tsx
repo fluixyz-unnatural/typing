@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import RomajiInput from './RomajiInput'
+import { Odai, theme1 } from '../utils/odai'
 
 interface KeyIconProps {
   label: string
@@ -54,7 +55,11 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
             active={props.input.includes(key)}
           />
         ))}
-        <KeyIcon width="100" label={''} active={props.input.includes('BACKSPACE')} />
+        <KeyIcon
+          width="100"
+          label={''}
+          active={props.input.includes('BACKSPACE')}
+        />
       </div>
 
       <div className={'keyboard-row'}>
@@ -82,7 +87,11 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
         <KeyIcon width="125" label={''} active={false} />
       </div>
       <div className={'keyboard-row'}>
-        <KeyIcon width="232" label={''} active={props.input.includes('SHIFT')} />
+        <KeyIcon
+          width="232"
+          label={''}
+          active={props.input.includes('SHIFT')}
+        />
         {keys[3].split('').map((key) => (
           <KeyIcon
             width="100"
@@ -91,7 +100,11 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
             active={props.input.includes(key)}
           />
         ))}
-        <KeyIcon width="168" label={''} active={props.input.includes('SHIFT')} />
+        <KeyIcon
+          width="168"
+          label={''}
+          active={props.input.includes('SHIFT')}
+        />
       </div>
       <div className={'keyboard-row'}>
         <KeyIcon width="misc" label={''} active={false} />
@@ -109,35 +122,74 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
   )
 }
 
-function TextDisplay() {
-  return (
-    <div>
-      <p>お題漢字</p>
-      <p>おだいひらがな</p>
-      <p>odai ro-maji</p>
-    </div>
-  )
+const randomSelect = (arr: Array<Odai>, num) => {
+  const ans = []
+  arr = JSON.parse(JSON.stringify(arr))
+  for (let i = 0; i < num; i++) {
+    const rnd = Math.floor(Math.random() * arr.length)
+    ans.push(arr[rnd])
+    arr.splice(rnd, 1)
+  }
+  return ans
 }
+
+const ResultModal = () => {
+  return <div></div>
+}
+
+const count = 5
 
 export default function Game() {
   const [input, setInput] = useState([])
+  const [cursor, setCursor] = useState(0)
   const inputRef = useRef(input)
-  useEffect(()=>{
+  const [onGame, setOnGame] = useState(false)
+  const odais = useRef(randomSelect(theme1, count))
+  const [startTime, setStartTime] = useState(0)
+  useEffect(() => {
     inputRef.current = input
-  },[input])
-  const alphabet = 'KONOSEKAINIMIRAINOGIJUTUWODENZYUSURU'
+  }, [input])
+  const gameStart = () => {
+    setOnGame(true)
+    setStartTime(performance.now())
+  }
+  const gameSet = () => {
+    const duration = ((performance.now()-startTime)/1000)
+    alert(duration)
+  }
+  const gameReset = () => {}
   const handleInput = (key: string) => {
-    console.log(key.length, [key.toUpperCase()])
-    setInput([...input,key.toUpperCase()])
-    setTimeout(()=>{
-      console.log('setTimeout', JSON.stringify(inputRef.current))
+    if (!onGame) gameStart()
+    setInput([...input, key.toUpperCase()])
+    setTimeout(() => {
       setInput(inputRef.current.splice(1))
-    },250)
+    }, 250)
+  }
+  const handleClear = () => {
+    if (cursor + 1 < odais.current.length) setCursor(cursor + 1)
+    else {
+      gameSet()
+    }
   }
   return (
-    <div>
-      <TextDisplay />
-      <RomajiInput handleInput={handleInput} />
+    <div className="game-container">
+      <div>
+        <p className={'time'}>
+          {cursor + 1}/{count}
+        </p>
+        <p>{onGame ? 'playing' : '...'}</p>
+      </div>
+      <RomajiInput
+        odai={odais.current[cursor]}
+        handleClear={handleClear}
+        handleInput={handleInput}
+      />
+      <div suppressHydrationWarning>
+        次　：
+        {cursor + 1 < odais.current.length
+          ? odais.current[cursor + 1].view
+          : ''}
+      </div>
       <KeyBoardDisplay input={input} />
     </div>
   )
