@@ -8,7 +8,7 @@ export default function Document() {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossorigin={true}
+          crossOrigin={'anonymous'}
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Zen+Maru+Gothic:wght@300;700&display=swap"
