@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document'
+import { fontText } from '../utils/odai'
 
 export default function Document() {
   return (
@@ -11,7 +12,9 @@ export default function Document() {
           crossOrigin={'anonymous'}
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Zen+Maru+Gothic:wght@300;700&display=swap"
+          href={`https://fonts.googleapis.com/css2?family=Varela+Round&family=Zen+Maru+Gothic&text=${encodeURIComponent(
+            fontText
+          )}:wght@300;700&display=swap`}
           rel="stylesheet"
         />
       </Head>
