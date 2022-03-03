@@ -191,7 +191,7 @@ const ResultModal = (props: ResultProps) => {
     }
   }, [])
   return props.result.dur > 0 ? (
-    <div className="result-modal absolute inset-0 bg-white bg-opacity-50 backdrop-blur-sm font-zenmaru">
+    <div className="result-modal absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm font-zenmaru">
       <div className="result-container">
         <h3
           className={
@@ -262,6 +262,9 @@ export default function Game() {
   const inputRef = useRef(input)
   const [state, setState] = useState('waiting' as State)
   const [odais, setOdais] = useState(randomSelect(theme1, count))
+  useEffect(() => {
+    setOdais(randomSelect(theme1, count))
+  }, [])
   const [startTime, setStartTime] = useState(0)
   const clearBufferRef: any = useRef()
   const [result, setResult] = useState({ dur: -1, err: 0, real: '' })
