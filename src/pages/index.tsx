@@ -4,7 +4,7 @@ import Game from '../components/Game'
 
 const IndexPage = () => (
   <Layout title="typing [WIP]">
-    <h1>タイピング練習</h1>
+    <h1>typing [WIP]</h1>
     <Game />
     <div className="w-11/12 p-4">
       <h2 className={'text-xl'}>説明</h2>
