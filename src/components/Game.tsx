@@ -3,6 +3,7 @@ import RomajiInput from './RomajiInput'
 import { Odai, theme1 } from '../utils/odai'
 import { optKey } from '../utils/optRoman'
 import Image from 'next/image'
+import { ranks } from '../utils/rank'
 import S from '../assets/s.png'
 
 interface KeyIconProps {
@@ -172,14 +173,15 @@ const ResultModal = (props: ResultProps) => {
     ) - 1
   const score = Math.round((theoricalKeys / props.result.dur) * 60)
   const link = location.href
-  const text = encodeURIComponent(`rank: ${'S'}\nscore: ${score}\n`)
-  const tweetButton = useRef()
-  const handleKey = (e: KeyboardEvent) => {
+  const rank = ranks[Math.min(Math.floor(score / 50), ranks.length - 1)]
+  const text = encodeURIComponent(`rank: ${rank}\nscore: ${score}\n`)
+  const tweet = `https://twitter.com/share?url=${link}&text=${text}&hashtags=yeah,ph,ah`
+  const handleKey: any = (e: KeyboardEvent) => {
     if (e.key === 'r') {
       props.replay()
     }
     if (e.key === 't') {
-      if (tweetButton.current) window.open(tweetButton.current.href)
+      window.open(tweet)
     }
   }
   useEffect(() => {
@@ -189,13 +191,19 @@ const ResultModal = (props: ResultProps) => {
     }
   }, [])
   return props.result.dur > 0 ? (
-    <div className="result-modal absolute inset-0 bg-white bg-opacity-50 backdrop-blur-sm">
+    <div className="result-modal absolute inset-0 bg-white bg-opacity-50 backdrop-blur-sm font-zenmaru">
       <div className="result-container">
-        <h3 className={'text-xl mt-12 ml-12 mb-4'}>Result</h3>
+        <h3
+          className={
+            'text-xl mt-12 mb-4 text-center border-b-2 w-fit px-1 pb-1 m-auto border-indigo-300'
+          }
+        >
+          Result
+        </h3>
         <div className={'flex place-content-between w-8/12 m-auto'}>
           <div className={'w-64 h-64'}>
             <img className={'w-32 h-32 m-auto mt-12'} src={S.src} />
-            <h4 className={'text-center mt-4'}>今回のランク</h4>
+            <h4 className={'text-center mt-4'}>ランク：{rank}</h4>
           </div>
 
           <div className="flex flex-col w-64 space-y-4 p-4">
@@ -226,16 +234,15 @@ const ResultModal = (props: ResultProps) => {
             className="bg-gray-400 text-white w-24 py-2"
             onClick={props.replay}
           >
-            もう一度 [r]
+            (R) もう一度
           </button>
           <a
-            ref={tweetButton}
-            href={`https://twitter.com/share?url=${link}&text=${text}&hashtags=yeah,ph,ah`}
+            href={tweet}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-blue-400 w-24 py-2 text-white text-center"
           >
-            Tweet [t]
+            (T) Tweet
           </a>
         </div>
       </div>
@@ -245,7 +252,7 @@ const ResultModal = (props: ResultProps) => {
   )
 }
 
-const count = 5
+const count = 20
 
 type State = 'onGame' | 'waiting' | 'result'
 
@@ -254,7 +261,7 @@ export default function Game() {
   const [cursor, setCursor] = useState(0)
   const inputRef = useRef(input)
   const [state, setState] = useState('waiting' as State)
-  const [odais,setOdais] = useState(randomSelect(theme1, count))
+  const [odais, setOdais] = useState(randomSelect(theme1, count))
   const [startTime, setStartTime] = useState(0)
   const clearBufferRef: any = useRef()
   const [result, setResult] = useState({ dur: -1, err: 0, real: '' })
@@ -297,6 +304,15 @@ export default function Game() {
       setResult(tmp)
     }
   }
+  const handleKeydown: any = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') gameReset()
+  }
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeydown)
+    return () => {
+      document.removeEventListener('keydown', handleKeydown)
+    }
+  }, [])
   return (
     <div className="game-container">
       <div>
@@ -312,10 +328,10 @@ export default function Game() {
         handleInput={handleInput}
       />
       <div suppressHydrationWarning>
-        次：
-        {cursor + 1 < odais.length
-          ? odais[cursor + 1].view
-          : ''}
+        <span className="border-l-2 my-4 ml-8 pl-1 inline-block text-md">
+          次：
+        </span>
+        {cursor + 1 < odais.length ? odais[cursor + 1].view : ''}
       </div>
       <KeyBoardDisplay input={input} />
       {state === 'result' ? (
