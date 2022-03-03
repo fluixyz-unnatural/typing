@@ -22,6 +22,9 @@ export default function RomajiInput(props: Props) {
   const [fin, setFin] = useState('')
   const [err, setErr] = useState(0)
   const errRef = useRef(err)
+  const audio1 = useRef<HTMLAudioElement>()
+  const audio2 = useRef<HTMLAudioElement>()
+  const audio3 = useRef<HTMLAudioElement>()
   useEffect(() => {
     errRef.current = err
   }, [err])
@@ -118,14 +121,30 @@ export default function RomajiInput(props: Props) {
     }
     setError(!ok)
     if (odai.length === cursor + 1 && forward === true) {
-      props.handleClear(fin,err)
+      props.handleClear(fin, err)
       setCursor(0)
       setFin('')
     }
   }, [buffer])
-
+  let audio = 0
   // キー入力を受け取る
   const handleKeyDown = (e: KeyboardEvent) => {
+    console.log(typeof(audio1.current))
+    if (audio1.current) {
+      if (audio % 3 == 0) {
+        audio1.current.currentTime = 0
+        audio1.current.play()
+      }
+      if (audio % 3 == 1) {
+        audio2.current.currentTime = 0
+        audio2.current.play()
+      }
+      if (audio % 3 == 2) {
+        audio3.current.currentTime = 0
+        audio3.current.play()
+      }
+      audio++
+    }
     if (e.key === 'Backspace' && bufferRef.current.length > 0) {
       setBuffer(bufferRef.current.slice(0, bufferRef.current.length - 1))
       setErr(errRef.current + 1)
@@ -141,8 +160,12 @@ export default function RomajiInput(props: Props) {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [props.handleInput])
+
   return (
     <div className={'game-text-view'}>
+      <audio hidden src="/single-key.mp3" ref={audio1} />
+      <audio hidden src="/single-key.mp3" ref={audio2} />
+      <audio hidden src="/single-key.mp3" ref={audio3} />
       <div style={{ display: 'flex' }}>
         <p>お題：</p>
         <div>
