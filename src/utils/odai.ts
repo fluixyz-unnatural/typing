@@ -92,3 +92,9 @@ export const theme1 = [
     kana: 'めぐりゆくしのやすらぎつきのゆりかご',
   },
 ]
+
+let va = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"#$%&\'()=~|-^\\@`[{+;*:}]<,>.?/_'
+theme1.forEach((e)=>{
+  va += e.view + e.kana
+})
+export const fontText = Array.from(new Set(va))

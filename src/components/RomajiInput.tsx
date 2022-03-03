@@ -9,7 +9,8 @@ import { Odai } from '../utils/odai'
 
 interface Props {
   handleInput: (key: string) => void
-  handleClear: () => void
+  handleClear: (fin: string, err: number) => void
+  clearBuffer: any
   odai: Odai
 }
 
@@ -19,7 +20,19 @@ export default function RomajiInput(props: Props) {
   const [cursor, setCursor] = useState(0)
   const [error, setError] = useState(false)
   const [fin, setFin] = useState('')
-
+  const [err, setErr] = useState(0)
+  const errRef = useRef(err)
+  useEffect(() => {
+    errRef.current = err
+  }, [err])
+  props.clearBuffer.current = () => {
+    console.log('clear buffer')
+    setBuffer([])
+    setCursor(0)
+    setError(false)
+    setFin('')
+    setErr(0)
+  }
   const odai = props.odai.kana
   useEffect(() => {
     // イベントリスナーから呼ぶための
@@ -105,7 +118,7 @@ export default function RomajiInput(props: Props) {
     }
     setError(!ok)
     if (odai.length === cursor + 1 && forward === true) {
-      props.handleClear()
+      props.handleClear(fin,err)
       setCursor(0)
       setFin('')
     }
@@ -113,8 +126,10 @@ export default function RomajiInput(props: Props) {
 
   // キー入力を受け取る
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Backspace')
+    if (e.key === 'Backspace' && bufferRef.current.length > 0) {
       setBuffer(bufferRef.current.slice(0, bufferRef.current.length - 1))
+      setErr(errRef.current + 1)
+    }
     if (e.key.length === 1) setBuffer([...bufferRef.current, e.key])
     props.handleInput(e.key)
   }

@@ -71,9 +71,6 @@
   font-family: 'Zen Maru Gothic', sans-serif;
   font-size: 1.75rem;
 }
-p {
-  margin: 0.25em;
-}
 
 .error-buffer {
   color: red;
@@ -106,13 +103,10 @@ p {
   }
 }
 
-.time {
-  font-size: 1.6rem;
-}
-
 .game-container {
   border: rgb(99, 94, 107) solid 0.2rem;
   width: 100ch;
   padding: 2rem;
   margin: 1rem;
+  position: relative;
 }

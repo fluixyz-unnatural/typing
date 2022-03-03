@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import RomajiInput from './RomajiInput'
 import { Odai, theme1 } from '../utils/odai'
+import { optKey } from '../utils/optRoman'
+import Image from 'next/image'
+import S from '../assets/s.png'
 
 interface KeyIconProps {
   label: string
@@ -122,7 +125,7 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
   )
 }
 
-const randomSelect = (arr: Array<Odai>, num) => {
+const randomSelect = (arr: Array<Odai>, num): Array<Odai> => {
   const ans = []
   arr = JSON.parse(JSON.stringify(arr))
   for (let i = 0; i < num; i++) {
@@ -133,42 +136,165 @@ const randomSelect = (arr: Array<Odai>, num) => {
   return ans
 }
 
-const ResultModal = () => {
-  return <div></div>
+interface ParamProps {
+  label: string
+  param: string
+  unit: string
+}
+
+const Param = (props: ParamProps) => {
+  return (
+    <div className={'flex place-content-between items-end border-b-2'}>
+      <div className={'text-md'}>{props.label}</div>
+      <div className="flex items-end space-x-1">
+        <div className={'text-xl'}>{props.param}</div>
+        <div className={'text-md'}>{props.unit}</div>
+      </div>
+    </div>
+  )
+}
+
+interface ResultProps {
+  odais: Array<Odai>
+  result: {
+    dur: number
+    err: number
+    real: string
+  }
+  replay: () => void
+}
+
+const ResultModal = (props: ResultProps) => {
+  const theoricalKeys =
+    props.odais.reduce(
+      (prev, val, index) => prev + optKey(val.kana).length,
+      0
+    ) - 1
+  const score = Math.round((theoricalKeys / props.result.dur) * 60)
+  const link = location.href
+  const text = encodeURIComponent(`rank: ${'S'}\nscore: ${score}\n`)
+  const tweetButton = useRef()
+  const handleKey = (e: KeyboardEvent) => {
+    if (e.key === 'r') {
+      props.replay()
+    }
+    if (e.key === 't') {
+      if (tweetButton.current) window.open(tweetButton.current.href)
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('keydown', handleKey)
+    return () => {
+      document.removeEventListener('keydown', handleKey)
+    }
+  }, [])
+  return props.result.dur > 0 ? (
+    <div className="result-modal absolute inset-0 bg-white bg-opacity-50 backdrop-blur-sm">
+      <div className="result-container">
+        <h3 className={'text-xl mt-12 ml-12 mb-4'}>Result</h3>
+        <div className={'flex place-content-between w-8/12 m-auto'}>
+          <div className={'w-64 h-64'}>
+            <img className={'w-32 h-32 m-auto mt-12'} src={S.src} />
+            <h4 className={'text-center mt-4'}>今回のランク</h4>
+          </div>
+
+          <div className="flex flex-col w-64 space-y-4 p-4">
+            <Param label="スコア" param={`${score}`} unit="pt" />
+            <Param
+              label="打鍵数"
+              param={`${props.result.real.length}`}
+              unit="key"
+            />
+            <Param label="ミス" param={`${props.result.err}`} unit="key" />
+            <Param
+              label="打鍵/秒"
+              unit="key/sec"
+              param={`${
+                Math.round((props.result.real.length / props.result.dur) * 10) /
+                10
+              }`}
+            />
+            <Param
+              label="入力時間"
+              unit="sec"
+              param={`${Math.round(props.result.dur * 10) / 10}`}
+            />
+          </div>
+        </div>
+        <div className={'flex place-content-between mx-64 my-8'}>
+          <button
+            className="bg-gray-400 text-white w-24 py-2"
+            onClick={props.replay}
+          >
+            もう一度 [r]
+          </button>
+          <a
+            ref={tweetButton}
+            href={`https://twitter.com/share?url=${link}&text=${text}&hashtags=yeah,ph,ah`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-400 w-24 py-2 text-white text-center"
+          >
+            Tweet [t]
+          </a>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <></>
+  )
 }
 
 const count = 5
+
+type State = 'onGame' | 'waiting' | 'result'
 
 export default function Game() {
   const [input, setInput] = useState([])
   const [cursor, setCursor] = useState(0)
   const inputRef = useRef(input)
-  const [onGame, setOnGame] = useState(false)
-  const odais = useRef(randomSelect(theme1, count))
+  const [state, setState] = useState('waiting' as State)
+  const [odais,setOdais] = useState(randomSelect(theme1, count))
   const [startTime, setStartTime] = useState(0)
+  const clearBufferRef: any = useRef()
+  const [result, setResult] = useState({ dur: -1, err: 0, real: '' })
   useEffect(() => {
     inputRef.current = input
   }, [input])
   const gameStart = () => {
-    setOnGame(true)
+    setState('onGame')
     setStartTime(performance.now())
   }
-  const gameSet = () => {
-    const duration = ((performance.now()-startTime)/1000)
-    alert(duration)
+  const gameReset = () => {
+    setInput([])
+    setCursor(0)
+    setState('waiting')
+    setResult({ dur: -1, err: 0, real: '' })
+    if (clearBufferRef.current) clearBufferRef.current()
+    setOdais(randomSelect(theme1, count))
   }
-  const gameReset = () => {}
   const handleInput = (key: string) => {
-    if (!onGame) gameStart()
+    if (state === 'waiting') {
+      gameStart()
+    }
     setInput([...input, key.toUpperCase()])
     setTimeout(() => {
       setInput(inputRef.current.splice(1))
     }, 250)
   }
-  const handleClear = () => {
-    if (cursor + 1 < odais.current.length) setCursor(cursor + 1)
+  const handleClear = (fin: string, err: number) => {
+    console.log(fin, err)
+    const tmp = result
+    tmp.real += fin
+    setResult(tmp)
+    if (cursor + 1 < odais.length) setCursor(cursor + 1)
     else {
-      gameSet()
+      const duration = (performance.now() - startTime) / 1000
+      setState('result')
+      const tmp = result
+      tmp.dur = duration
+      tmp.err = err
+      setResult(tmp)
     }
   }
   return (
@@ -177,20 +303,27 @@ export default function Game() {
         <p className={'time'}>
           {cursor + 1}/{count}
         </p>
-        <p>{onGame ? 'playing' : '...'}</p>
+        <p>{state}</p>
       </div>
       <RomajiInput
-        odai={odais.current[cursor]}
+        clearBuffer={clearBufferRef}
+        odai={odais[cursor]}
         handleClear={handleClear}
         handleInput={handleInput}
       />
       <div suppressHydrationWarning>
-        次　：
-        {cursor + 1 < odais.current.length
-          ? odais.current[cursor + 1].view
+        次：
+        {cursor + 1 < odais.length
+          ? odais[cursor + 1].view
           : ''}
       </div>
       <KeyBoardDisplay input={input} />
+      {state === 'result' ? (
+        <ResultModal replay={gameReset} odais={odais} result={result} />
+      ) : (
+        <></>
+      )}
+      <button onClick={gameReset}>reset</button>
     </div>
   )
 }
