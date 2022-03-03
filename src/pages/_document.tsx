@@ -13,8 +13,8 @@ export default function Document() {
         />
         <link
           href={`https://fonts.googleapis.com/css2?family=Varela+Round&family=Zen+Maru+Gothic&text=${encodeURIComponent(
-            fontText
-          )}:wght@300;700&display=swap`}
+            String(fontText)
+          )+"お題入力次："}:wght@300;700&display=swap`}
           rel="stylesheet"
         />
       </Head>

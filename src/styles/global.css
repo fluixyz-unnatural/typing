@@ -72,6 +72,10 @@
   font-size: 1.75rem;
 }
 
+.font-zenmaru {
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
 .error-buffer {
   color: red;
   font-weight: bold;
@@ -90,7 +94,7 @@
 .carret {
   display: inline-block;
   border-left: rgb(125, 169, 221) solid 0.125rem;
-  height: 1ch;
+  height: 1.5ch;
   animation: 1s ease-out 0s infinite blinking;
 }
 
