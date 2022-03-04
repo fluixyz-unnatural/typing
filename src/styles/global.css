@@ -59,6 +59,23 @@
   margin: auto;
 }
 
+.rollver{
+  transition: transform 1s
+}
+
+.rollover-1{
+  transform: scale(0.995)
+}
+.rollover-2{
+  transform: scale(0.99)
+}
+.rollover-3{
+  transform: scale(0.985)
+}
+.rollover-4{
+  transform: scale(0.98)
+}
+
 .keyboard-row {
   width: calc(2.5 * 16rem);
   display: flex;

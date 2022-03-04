@@ -317,7 +317,7 @@ export default function Game() {
     }
   }, [])
   return (
-    <div className="game-container">
+    <div className={`game-container rollover rollover-${input.length}`}>
       <div>
         <p className={'time'}>
           {cursor + 1}/{count}
