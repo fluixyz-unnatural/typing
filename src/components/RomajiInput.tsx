@@ -184,7 +184,7 @@ export default function RomajiInput(props: Props) {
       <div style={{ display: 'flex' }}>
         <p>入力：</p>
         <p>
-          <span>{fin}</span>
+          <span>{odai.substring(0, cursor)}</span>
           <span className={error ? 'error-buffer' : ''}>{buffer}</span>
           <span className="carret"></span>
         </p>
