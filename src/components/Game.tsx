@@ -166,6 +166,7 @@ interface ResultProps {
 }
 
 const ResultModal = (props: ResultProps) => {
+  const [isHighscore, setIsHighscore] = useState(false)
   const theoricalKeys =
     props.odais.reduce(
       (prev, val, index) => prev + optKey(val.kana).length,
@@ -185,9 +186,19 @@ const ResultModal = (props: ResultProps) => {
     }
   }
   useEffect(() => {
+    let highscore: any = JSON.parse(localStorage.getItem('highscore'))
+    if (highscore && score > highscore.score) {
+      setIsHighscore(true)
+    }
     document.addEventListener('keydown', handleKey)
     return () => {
       document.removeEventListener('keydown', handleKey)
+      if (!highscore || score > highscore.score) {
+        localStorage.setItem(
+          'highscore',
+          JSON.stringify({ score: score, date: Date.now() })
+        )
+      }
     }
   }, [])
   return props.result.dur > 0 ? (
@@ -207,7 +218,9 @@ const ResultModal = (props: ResultProps) => {
           </div>
 
           <div className="flex flex-col w-64 space-y-4 p-4">
-            <Param label="スコア" param={`${score}`} unit="pt" />
+            <div className={isHighscore?'highscore-label':''}>
+              <Param label="スコア" param={`${score}`} unit="pt" />
+            </div>
             <Param
               label="打鍵数"
               param={`${props.result.real.length}`}
@@ -252,7 +265,7 @@ const ResultModal = (props: ResultProps) => {
   )
 }
 
-const count = 20
+const count = 15
 
 type State = 'onGame' | 'waiting' | 'result'
 
