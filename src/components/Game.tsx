@@ -265,7 +265,7 @@ const ResultModal = (props: ResultProps) => {
   )
 }
 
-const count = 15
+const count = 10
 
 type State = 'onGame' | 'waiting' | 'result'
 

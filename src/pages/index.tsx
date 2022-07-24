@@ -9,7 +9,7 @@ const IndexPage = () => (
     <div className="w-11/12 p-4">
       <h2 className={'text-xl'}>説明</h2>
       <p className={'m-2'}>
-        20個のお題を打ち切る形式のタイピングゲームです。Google日本語入力と同様の入力が可能です。
+        10個のお題を打ち切る形式のタイピングゲームです。Google日本語入力と同様の入力が可能です。
       </p>
       <h2 className={'text-xl'}>スコア算出方法</h2>
       <p className={'m-2'}>
