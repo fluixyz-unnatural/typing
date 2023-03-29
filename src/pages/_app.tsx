@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import '../styles/global.css'
 import 'tailwindcss/tailwind.css'
+import { ResultModal } from '../components/ResultModal'
 
 export default function App({ Component, pageProps }) {
   return (
@@ -17,8 +18,6 @@ export default function App({ Component, pageProps }) {
         />
         <meta property="og:image" content="画像のURL" />
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@yoigara3" />
-        <meta property="og:site_name" content="サイト名" />
         <meta property="og:locale" content="ja_JP" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

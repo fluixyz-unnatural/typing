@@ -8,8 +8,8 @@ export const theme1 = [
     kana: 'たべてすぐねてうしになる',
   },
   {
-    view: '軍隊ガニで作られたコンピュータが存在する',
-    kana: 'ぐんたいがにでつくられたこんぴゅーたがそんざいする',
+    view: '軍隊ガニでコンピュータを作る',
+    kana: 'ぐんたいがにでこんぴゅーたをつくる',
   },
   {
     view: 'タラバガニはヤドカリの仲間',
@@ -18,10 +18,6 @@ export const theme1 = [
   {
     view: 'カニの爪をもがれたよう',
     kana: 'かにのつめをもがれたよう',
-  },
-  {
-    view: 'プーパッポンカリー',
-    kana: 'ぷーぱっぽんかりー',
   },
   {
     view: 'スベスベマンジュウガニは毒をもつ',
@@ -36,10 +32,6 @@ export const theme1 = [
     kana: 'かにのあかちゃんはぷらんくとん',
   },
   {
-    view: 'カニは虎や狼のように恐れられていた',
-    kana: 'かにはとらやおおかみのようにおそれられていた',
-  },
-  {
     view: '地球上でニ番目に賢いのはイルカ',
     kana: 'ちきゅうじょうでにばんめにかしこいのはいるか',
   },
@@ -48,8 +40,6 @@ export const theme1 = [
     view: '神の奇跡より悪魔の気まぐれ',
     kana: 'かみのきせきよりあくまのきまぐれ',
   },
-  { view: '深夜の弾き語りはエモい', kana: 'しんやのひきがたりはえもい' },
-  { view: '破壊蹂躙処刑', kana: 'はかいじゅうりんしょけい' },
   { view: 'トリニトロトルエン', kana: 'とりにとろとるえん' },
   { view: '陸に上がった河童', kana: 'りくにあがったかっぱ' },
   {
@@ -72,17 +62,18 @@ export const theme1 = [
     kana: 'むげんのさるていり',
   },
   {
-    view: '黒き死を遡るかのように',
-    kana: 'くろきしをさかのぼるかのように',
+    view: '雪だるまが海に飛び込んだ',
+    kana: 'ゆきだるまがうみにとびこんだ',
   },
   {
-    view: '廻り行く死の安らぎ',
-    kana: 'めぐりゆくしのやすらぎ',
+    view: 'サメがお風呂でピザを食べる',
+    kana: 'さめがおふろでぴざをたべる',
   },
-]
+] as const satisfies readonly Odai[]
 
-let va = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"#$%&\'()=~|-^\\@`[{+;*:}]<,>.?/_'
-theme1.forEach((e)=>{
+let va =
+  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"#$%&\'()=~|-^\\@`[{+;*:}]<,>.?/_'
+theme1.forEach((e) => {
   va += e.view + e.kana
 })
 export const fontText = Array.from(new Set(va))

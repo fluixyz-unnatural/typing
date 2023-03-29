@@ -17,4 +17,4 @@ export const ranks = [
   'RedMatter',
   'Infinity',
   'Creative',
-]
+] as const satisfies readonly string[]

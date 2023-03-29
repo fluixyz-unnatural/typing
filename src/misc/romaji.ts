@@ -298,37 +298,42 @@ export const romajiTable = {
   whu: 'う',
   whe: 'うぇ',
   who: 'うぉ',
-}
+} as const
 
 // romajiTableから導出する
-let tmp = {}
-const keys = Object.keys(romajiTable)
-for (let i = 0; i < keys.length; i++) {
-  if (tmp[romajiTable[keys[i]]]) {
-    tmp[romajiTable[keys[i]]].push(keys[i])
+let tmp: Record<string, string[]> = {}
+const keys = Object.keys(romajiTable) as unknown as keyof typeof romajiTable
+
+for (const key of keys) {
+  const v = romajiTable[key as keyof typeof romajiTable];
+  if (tmp[v]) {
+    tmp[v].push(key)
   } else {
-    tmp[romajiTable[keys[i]]] = [keys[i]]
+    tmp[v] = [key]
   }
 }
+
 export const InvertedRomajiTable = tmp
 
 // export const consonants = Array.from("bcdf ghjk lmpq rstv wxyz");
-let tmp2 = {}
-for (let i = 0; i < keys.length; i++) {
-  if (keys[i].length > 1) {
-    const c = keys[i][0]
-    const out = romajiTable[keys[i]]
+// あるキー1文字目から入力可能なかなのマップ
+let tmp2: Record<string, string[]> = {}
+for (const key of keys) {
+  if (key.length > 1) {
+    const c = key[0]
+    const out = romajiTable[key as keyof typeof romajiTable]
     if (tmp2[c]) tmp2[c].push(out[0])
     else tmp2[c] = [out[0]]
   }
 }
+
 const consonantsKeys = Object.keys(tmp2)
 for (let i = 0; i < consonantsKeys.length; i++) {
   tmp2[consonantsKeys[i]] = Array.from(new Set(tmp2[consonantsKeys[i]]))
 }
 export const consonants = Object.keys(tmp2)
 
-let tmp3 = {}
+let tmp3:Record<string,string[]> = {}
 
 for (let i = 0; i < consonants.length; i++) {
   const c = consonants[i]
