@@ -1,16 +1,16 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, MutableRefObject } from 'react'
 import {
   InvertedRomajiTable,
   romajiTable,
   consonants,
   invertedConsonantsTable,
-} from '../utils/romaji'
-import { Odai } from '../utils/odai'
+} from '../misc/romaji'
+import { Odai } from '../misc/odai'
 
 interface Props {
   handleInput: (key: string) => void
-  handleClear: (fin: string, err: number) => void
-  clearBuffer: any
+  handleClear: (fin: string, missType: number) => void
+  clearBuffer: MutableRefObject<() => void>
   odai: Odai
 }
 
@@ -18,23 +18,22 @@ export default function RomajiInput(props: Props) {
   const [buffer, setBuffer] = useState([] as Array<string>)
   const bufferRef = useRef(buffer)
   const [cursor, setCursor] = useState(0)
-  const [error, setError] = useState(false)
   const [fin, setFin] = useState('')
-  const [err, setErr] = useState(0)
-  const errRef = useRef(err)
-  const audio1 = useRef<HTMLAudioElement>()
-  const audio2 = useRef<HTMLAudioElement>()
-  const audio3 = useRef<HTMLAudioElement>()
+  const [missType, setMissType] = useState(0)
+  const errRef = useRef(missType)
+
+  // 連続で音を鳴らす用…
+  const audio1 = useRef<HTMLAudioElement>(null)
+  const audio2 = useRef<HTMLAudioElement>(null)
+  const audio3 = useRef<HTMLAudioElement>(null)
   useEffect(() => {
-    errRef.current = err
-  }, [err])
+    errRef.current = missType
+  }, [missType])
   props.clearBuffer.current = () => {
-    console.log('clear buffer')
     setBuffer([])
     setCursor(0)
-    setError(false)
     setFin('')
-    setErr(0)
+    setMissType(0)
   }
   const odai = props.odai.kana
   useEffect(() => {
@@ -44,11 +43,6 @@ export default function RomajiInput(props: Props) {
 
   // 変換 & 誤入力チェック
   useEffect(() => {
-    // 入力バッファ0
-    if (buffer.length < 1) {
-      setError(false)
-      return
-    }
     if (!odai[cursor]) return
     // 入力対象1文字
     let target1 = odai[cursor]
@@ -76,7 +70,9 @@ export default function RomajiInput(props: Props) {
         if (input.substring(0, convert.length) === convert) {
           target1 = ''
           ok = true
-          setCursor(cursor + romajiTable[convert].length)
+          setCursor(
+            cursor + romajiTable[convert as keyof typeof romajiTable].length
+          )
           setFin(fin + buffer.splice(0, convert.length).join(''))
           setBuffer(buffer.splice(convert.length))
           forward = true
@@ -119,9 +115,15 @@ export default function RomajiInput(props: Props) {
         forward = true
       }
     }
-    setError(!ok)
+
+    // 誤入力判定だったら新規入力分をクリア
+    if (!ok) {
+      buffer.pop()
+      setMissType((prev) => prev + 1)
+      ok = false
+    }
     if (odai.length === cursor + 1 && forward === true) {
-      props.handleClear(fin, err)
+      props.handleClear(fin, missType)
       setCursor(0)
       setFin('')
     }
@@ -129,25 +131,24 @@ export default function RomajiInput(props: Props) {
   let audio = 0
   // キー入力を受け取る
   const handleKeyDown = (e: KeyboardEvent) => {
-    console.log(typeof(audio1.current))
     if (audio1.current) {
       if (audio % 3 == 0) {
         audio1.current.currentTime = 0
         audio1.current.play()
       }
       if (audio % 3 == 1) {
-        audio2.current.currentTime = 0
-        audio2.current.play()
+        audio2.current!.currentTime = 0
+        audio2.current!.play()
       }
       if (audio % 3 == 2) {
-        audio3.current.currentTime = 0
-        audio3.current.play()
+        audio3.current!.currentTime = 0
+        audio3.current!.play()
       }
       audio++
     }
     if (e.key === 'Backspace' && bufferRef.current.length > 0) {
       setBuffer(bufferRef.current.slice(0, bufferRef.current.length - 1))
-      setErr(errRef.current + 1)
+      setMissType(errRef.current + 1)
     }
     if (e.key.length === 1) setBuffer([...bufferRef.current, e.key])
     props.handleInput(e.key)
@@ -185,7 +186,7 @@ export default function RomajiInput(props: Props) {
         <p>入力：</p>
         <p>
           <span>{odai.substring(0, cursor)}</span>
-          <span className={error ? 'error-buffer' : ''}>{buffer}</span>
+          <span>{buffer}</span>
           <span className="carret"></span>
         </p>
       </div>

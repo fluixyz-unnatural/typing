@@ -139,3 +139,105 @@
   transform: translateX(-2rem) translateY(-1rem) rotate(-10deg);
   content: 'highscore';
 }
+
+.rank-normal {
+  font-weight: bold;
+  font-size: 4rem;
+  position: relative;
+  width: fit-content;
+  height: 72px;
+  text-align: center;
+  line-height: 72px;
+  font-family: 'Baloo 2', cursive;
+}
+.F-color {
+  color: rgb(126, 70, 151);
+}
+.E-color {
+  color: rgb(70, 92, 151);
+}
+.D-color {
+  color: rgb(45, 116, 88);
+}
+.C-color {
+  color: rgb(119, 163, 83);
+}
+.B-color {
+  color: rgb(209, 159, 19);
+}
+.A-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(90deg, #4158d0, #c850c0 10%, #ff5050);
+  -webkit-background-clip: text;
+}
+.S-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(90deg, #ffb4fb, #a89eff 70%, #5b8fff);
+  -webkit-background-clip: text;
+}
+
+.rank-stone {
+  font-weight: bold;
+  font-size: 3rem;
+  position: relative;
+  width: fit-content;
+  height: 36px;
+  text-align: center;
+  line-height: 36px;
+  font-family: 'Baloo 2', cursive;
+}
+.Iron-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(0deg, #000000, #e9e9e9 50%, #6655ff);
+  -webkit-background-clip: text;
+}
+.Bronze-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(0deg, #680202, #ff9d80 50%, #f55a00);
+  -webkit-background-clip: text;
+}
+.Silver-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(0deg, rgb(43, 63, 112), #eeeeee 50%, #9fc1ff);
+  -webkit-background-clip: text;
+}
+.Gold-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(0deg, #680202, #ffa806 50%, #ffe6d8);
+  -webkit-background-clip: text;
+}
+.Diamond-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(0deg, #04c4ff, #ffffff 50%, #70eaff);
+  -webkit-background-clip: text;
+}
+.Obsidian-color {
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(0deg, #000000, #4f16aa 50%, #7a6cf7);
+  -webkit-background-clip: text;
+}
+.Iridium-color {
+  -webkit-text-fill-color: transparent;
+  background-image: url('/rank-bg/iridium.jpg');
+  -webkit-background-clip: text;
+}
+.DarkMatter-color {
+  -webkit-text-fill-color: transparent;
+  background-image: url('/rank-bg/darkmatter.jpg');
+  -webkit-background-clip: text;
+}
+.RedMatter-color {
+  -webkit-text-fill-color: transparent;
+  background-image: url('/rank-bg/redmatter.jpg');
+  -webkit-background-clip: text;
+}
+.Infinity-color {
+  -webkit-text-fill-color: transparent;
+  background-image: url('/rank-bg/infinity.jpg');
+  -webkit-background-clip: text;
+}
+.Creative-color {
+  -webkit-text-fill-color: transparent;
+  background-image: url('/rank-bg/creative.jpg');
+  -webkit-background-clip: text;
+}

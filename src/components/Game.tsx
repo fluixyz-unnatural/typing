@@ -1,10 +1,7 @@
-import { KeyboardEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import RomajiInput from './RomajiInput'
-import { Odai, theme1 } from '../utils/odai'
-import { optKey } from '../utils/optRoman'
-import Image from 'next/image'
-import { ranks } from '../utils/rank'
-import S from '../assets/s.png'
+import { Odai, theme1 } from '../misc/odai'
+import { ResultModal } from './ResultModal'
 
 interface KeyIconProps {
   label: string
@@ -50,6 +47,7 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
   return (
     <div className={'keyboard'}>
       <div className={'keyboard-row'}>
+        {/* 最上段 */}
         <KeyIcon width="100" label={'♥'} active={false} />
         {keys[0].split('').map((key) => (
           <KeyIcon
@@ -65,7 +63,7 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
           active={props.input.includes('BACKSPACE')}
         />
       </div>
-
+      {/* 上段 */}
       <div className={'keyboard-row'}>
         <KeyIcon width="150" label={''} active={false} />
         {keys[1].split('').map((key) => (
@@ -78,6 +76,7 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
         ))}
         <KeyIcon width="150" label={''} active={false} />
       </div>
+      {/* 中段 */}
       <div className={'keyboard-row'}>
         <KeyIcon width="175" label={''} active={false} />
         {keys[2].split('').map((key) => (
@@ -90,6 +89,7 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
         ))}
         <KeyIcon width="125" label={''} active={false} />
       </div>
+      {/* 下段 */}
       <div className={'keyboard-row'}>
         <KeyIcon
           width="232"
@@ -110,6 +110,7 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
           active={props.input.includes('SHIFT')}
         />
       </div>
+      {/* 最下段（飾り） */}
       <div className={'keyboard-row'}>
         <KeyIcon width="misc" label={''} active={false} />
         <KeyIcon width="100" label={''} active={false} />
@@ -126,143 +127,15 @@ function KeyBoardDisplay(props: KeyBoardDisplayProps) {
   )
 }
 
-const randomSelect = (arr: Array<Odai>, num): Array<Odai> => {
+const randomSelect = (arr: Readonly<Odai[]>, num: number): Array<Odai> => {
   const ans = []
-  arr = JSON.parse(JSON.stringify(arr))
+  let arr2 = JSON.parse(JSON.stringify(arr))
   for (let i = 0; i < num; i++) {
-    const rnd = Math.floor(Math.random() * arr.length)
-    ans.push(arr[rnd])
-    arr.splice(rnd, 1)
+    const rnd = Math.floor(Math.random() * arr2.length)
+    ans.push(arr2[rnd])
+    arr2.splice(rnd, 1)
   }
   return ans
-}
-
-interface ParamProps {
-  label: string
-  param: string
-  unit: string
-}
-
-const Param = (props: ParamProps) => {
-  return (
-    <div className={'flex place-content-between items-end border-b-2'}>
-      <div className={'text-md'}>{props.label}</div>
-      <div className="flex items-end space-x-1">
-        <div className={'text-xl'}>{props.param}</div>
-        <div className={'text-md'}>{props.unit}</div>
-      </div>
-    </div>
-  )
-}
-
-interface ResultProps {
-  odais: Array<Odai>
-  result: {
-    dur: number
-    err: number
-    real: string
-  }
-  replay: () => void
-}
-
-const ResultModal = (props: ResultProps) => {
-  const [isHighscore, setIsHighscore] = useState(false)
-  const theoricalKeys =
-    props.odais.reduce(
-      (prev, val, index) => prev + optKey(val.kana).length,
-      0
-    ) - 1
-  const score = Math.round((theoricalKeys / props.result.dur) * 60)
-  const link = location.href
-  const rank = ranks[Math.min(Math.floor(score / 50), ranks.length - 1)]
-  const text = encodeURIComponent(`rank: ${rank}\nscore: ${score}\n`)
-  const tweet = `https://twitter.com/share?url=${link}&text=${text}&hashtags=typing`
-  const handleKey: any = (e: KeyboardEvent) => {
-    if (e.key === 'r') {
-      props.replay()
-    }
-    if (e.key === 't') {
-      window.open(tweet)
-    }
-  }
-  useEffect(() => {
-    let highscore: any = JSON.parse(localStorage.getItem('highscore'))
-    if (highscore && score > highscore.score) {
-      setIsHighscore(true)
-    }
-    document.addEventListener('keydown', handleKey)
-    return () => {
-      document.removeEventListener('keydown', handleKey)
-      if (!highscore || score > highscore.score) {
-        localStorage.setItem(
-          'highscore',
-          JSON.stringify({ score: score, date: Date.now() })
-        )
-      }
-    }
-  }, [])
-  return props.result.dur > 0 ? (
-    <div className="result-modal absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm font-zenmaru">
-      <div className="result-container">
-        <h3
-          className={
-            'text-xl mt-12 mb-4 text-center border-b-2 w-fit px-1 pb-1 m-auto border-indigo-300'
-          }
-        >
-          Result
-        </h3>
-        <div className={'flex place-content-between w-8/12 m-auto'}>
-          <div className={'w-64 h-64'}>
-            <img className={'w-32 h-32 m-auto mt-12'} src={S.src} />
-            <h4 className={'text-center mt-4'}>ランク：{rank}</h4>
-          </div>
-
-          <div className="flex flex-col w-64 space-y-4 p-4">
-            <div className={isHighscore?'highscore-label':''}>
-              <Param label="スコア" param={`${score}`} unit="pt" />
-            </div>
-            <Param
-              label="打鍵数"
-              param={`${props.result.real.length}`}
-              unit="key"
-            />
-            <Param label="ミス" param={`${props.result.err}`} unit="key" />
-            <Param
-              label="打鍵/秒"
-              unit="key/sec"
-              param={`${
-                Math.round((props.result.real.length / props.result.dur) * 10) /
-                10
-              }`}
-            />
-            <Param
-              label="入力時間"
-              unit="sec"
-              param={`${Math.round(props.result.dur * 10) / 10}`}
-            />
-          </div>
-        </div>
-        <div className={'flex place-content-between mx-64 my-8'}>
-          <button
-            className="bg-gray-400 text-white w-24 py-2"
-            onClick={props.replay}
-          >
-            (R) もう一度
-          </button>
-          <a
-            href={tweet}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-blue-400 w-24 py-2 text-white text-center"
-          >
-            (T) Tweet
-          </a>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <></>
-  )
 }
 
 const count = 10
@@ -270,16 +143,17 @@ const count = 10
 type State = 'onGame' | 'waiting' | 'result'
 
 export default function Game() {
-  const [input, setInput] = useState([])
+  const [input, setInput] = useState<string[]>([])
   const [cursor, setCursor] = useState(0)
   const inputRef = useRef(input)
   const [state, setState] = useState('waiting' as State)
   const [odais, setOdais] = useState(randomSelect(theme1, count))
+
   useEffect(() => {
     setOdais(randomSelect(theme1, count))
   }, [])
   const [startTime, setStartTime] = useState(0)
-  const clearBufferRef: any = useRef()
+  const clearBufferRef = useRef<() => void>(() => {})
   const [result, setResult] = useState({ dur: -1, err: 0, real: '' })
   useEffect(() => {
     inputRef.current = input
@@ -306,7 +180,6 @@ export default function Game() {
     }, 250)
   }
   const handleClear = (fin: string, err: number) => {
-    console.log(fin, err)
     const tmp = result
     tmp.real += fin
     setResult(tmp)
@@ -320,7 +193,7 @@ export default function Game() {
       setResult(tmp)
     }
   }
-  const handleKeydown: any = (e: KeyboardEvent) => {
+  const handleKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') gameReset()
   }
   useEffect(() => {
