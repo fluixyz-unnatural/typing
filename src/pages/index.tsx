@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Layout from '../components/Layout'
 import Game from '../components/Game'
-import { ResultModal } from '../components/ResultModal'
 import { Badge } from '../components/Badge'
 import { ranks } from '../misc/rank'
 
@@ -21,13 +20,6 @@ const IndexPage = () => (
         </code>
         をスコアとしています。一般的なkpmと近い値になりますが、「し」をsiではなくshiと打つようなかさ増しができません。
       </p>
-      <h2 className={'text-xl'}>リンク</h2>
-      <a href="https://github.com/fluixyz-unnatural/typing">GitHub</a>
-    </div>
-    <div className='p-4'>
-      {ranks.map((e) => (
-        <Badge rank={e} />
-      ))}
     </div>
   </Layout>
 )

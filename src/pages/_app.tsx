@@ -1,21 +1,15 @@
 import Head from 'next/head'
 import '../styles/global.css'
 import 'tailwindcss/tailwind.css'
-import { ResultModal } from '../components/ResultModal'
+import { AppProps } from 'next/app'
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <meta
-          name="description"
-          content="タイピングゲーム"
-        />
+        <meta name="description" content="タイピングゲーム" />
         <meta property="og:title" content="typing [WIP]" />
-        <meta
-          property="og:description"
-          content="タイピングゲーム"
-        />
+        <meta property="og:description" content="タイピングゲーム" />
         <meta
           property="og:image"
           content={`https://typing-seven-psi.vercel.app/s.png`}
