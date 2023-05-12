@@ -23,7 +23,7 @@ export const ResultModal = (props: ResultProps) => {
   const link = location.href
   const rank = ranks[Math.min(Math.floor(score / 50), ranks.length - 1)]
   const text = encodeURIComponent(`rank: ${rank}\nscore: ${score}\n`)
-  const tweet = `https://twitter.com/share?url=${link}&text=${text}&hashtags=yeah,ph,ah`
+  const tweet = `https://twitter.com/share?url=${link}&text=${text}`
   const handleKey = (ev: KeyboardEvent) => {
     if (ev.key === 'r') {
       props.replay()

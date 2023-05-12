@@ -13,8 +13,9 @@
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
-    "@types/react": "^18.0.28",
+    "@types/next": "^9.0.0",
     "@types/node": "^18.15.3",
+    "@types/react": "^18.2.6",
     "@types/react-dom": "^18.0.11",
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.21",
