@@ -1,8 +1,6 @@
 import Link from 'next/link'
 import Layout from '../components/Layout'
 import Game from '../components/Game'
-import { Badge } from '../components/Badge'
-import { ranks } from '../misc/rank'
 
 const IndexPage = () => (
   <Layout title="typing [WIP]">
